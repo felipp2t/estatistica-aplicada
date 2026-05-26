@@ -1,90 +1,104 @@
-Estou precisando de uma ajuda para criar um projeto de extensão para a minha materia "Estatística Aplicada" da faculdade.
+# 📊 Projeto de Extensão — Estatística Aplicada
 
-A nossa pergunta alvo é: 
-- "De que maneira a flutuação mensal na proporção de cargos comissionados e o volume de adiantamentos emergenciais explicam a variabilidade dos gastos com pessoal entre as secretarias?"
+Este repositório contém o projeto de extensão para a disciplina de **Estatística Aplicada**, focado na análise de dados públicos municipais, modelagem estatística e regressões lineares múltiplas.
 
-Basicamente eu tenho 4 bases da prefeitura:
-- `Adiantamentos-2026.json`
-- `Agentes Públicos-Trabalhando.json`
-- `Despesas com Pessoal-2025.json`
-- `Quadro de Cargos-2025.json`
+---
 
-Eu tenho que escolher 1 variável com comum: `target_instabilidade` e mais 25 variáveis que pode estar relacionado com isso:
+## 🎯 Pergunta Alvo (Problema de Pesquisa)
 
-Arquivo: Estrutura do Quadro (Arquivo: Quadro de Cargos-2025.json e Quadro de Cargos-2026.json)
+> **"De que maneira a flutuação mensal na proporção de cargos comissionados e o volume de adiantamentos emergenciais explicam a variabilidade dos gastos com pessoal entre as secretarias?"**
 
-1. `classificacaoCargo`: Se o cargo é Efetivo ou Comissionado (Variável chave para a sua pergunta).
-2. `quantidadeVagasCriadas`: O limite máximo de expansão de gastos daquela secretaria.
-3. `quantidadeVagasPreenchidas`: A taxa de ocupação real da estrutura.
-4. `nivelEscolaridade`: Requisito do cargo, que costuma ditar o patamar salarial inicial.
-5. `situacaoCargo`: Indica se o cargo está Ativo (gera custo) ou em processo de extinção.
-6. `competencia`: Mês de referência do quadro para identificar mudanças estruturais rápidas.
+### 💡 Em Português Claro (A Hipótese)
+O objetivo do projeto é testar e validar estatisticamente a seguinte hipótese:
+* **As secretarias municipais que possuem maior rotatividade/proporção de cargos comissionados e que utilizam maior volume de adiantamentos financeiros de emergência são exatamente aquelas onde a folha salarial de pessoal se mostra mais instável e imprevisível de um mês para o outro?**
 
-Arquivo: Perfil dos Agentes (Arquivo: Agentes Públicos-Trabalhando.json)
+---
 
-1. `valorRemuneracaoContratual`: O custo nominal bruto de cada servidor.
-2. `vinculoEmpregaticio`: (Estatutário, CLT, Temporário) – Vínculos diferentes têm regras de estabilidade e encargos diferentes.
-3. `dataAdmissao`: Permite calcular o "Tempo de Casa". Servidores mais antigos tendem a ter custos maiores e mais estáveis (anuênios/triênios).
-4. `cargaHorariaSemanal`: Ajuda a normalizar o custo (um servidor de 20h custa proporcionalmente diferente de um de 40h).
-5. `nivelSalarialAtual`: Indica em que estágio da carreira o servidor está (impacta a previsibilidade de aumentos).
-6. `tipoMatricula`: Diferenciação administrativa entre tipos de provimento.
-7. `orgao`: Chave de ligação para cruzar os dados com as despesas financeiras.
+## ⚙️ Tecnologias e Configuração do Ambiente
 
-Arquivo: Execução Financeira (Arquivos: Despesas com Pessoal-2025.json e Despesas com Pessoal-2026.json)
+O projeto utiliza o **`uv`**, um gerenciador de pacotes e ambientes Python de última geração, extremamente veloz.
 
-1. `descricaoElemento`: Identifica se o gasto é com "Vencimentos", "Obrigações Patronais" ou "Indenizações". Gastos com indenizações (comuns em exonerações de comissionados) geram instabilidade.
-2. `valorEmpenhado`: O quanto a prefeitura planejou gastar (previsto vs. realizado).
-3. `tipoEmpenho`: (Ordinário, Estimativo, Global) – Indica a previsibilidade do pagamento.
-4. `saldoAPagar`: Indica restos a pagar que podem desestabilizar o caixa futuro.
-5. `tipoRecurso`: Se a verba vem de recursos próprios ou transferências vinculadas (ex: FUNDEB, SUS), o que limita a flexibilidade do gasto.
-6. `descricaoPrograma`: A finalidade do gasto (ex: Gestão do SUS), correlacionando a estabilidade com a área de atuação.
-7. `idFuncao`: Classificação funcional que ajuda a comparar secretarias de áreas similares.
-8. `valorLiquidadoEmpenho`: Valor que já passou pela conferência de serviço prestado, sendo mais fidedigno que o empenho inicial.
-9. `dataEmpenho`: Variável temporal para construir a série histórica e calcular a estabilidade.
-10. `valorRestosAPagarProcessados`: Dívidas de anos anteriores que "pesam" no orçamento atual.
-11. `descricaoSubfuncao`: Detalhamento da área (ex: Atenção Básica vs. Hospitalar), onde a rotatividade de comissionados pode variar drasticamente.
-12. `historicoEmpenho`: Descrição textual que pode indicar gastos extraordinários (como rescisões ou bônus).
+### 🚀 Como Rodar o Projeto Localmente
 
-Arquivo: Adiantamentos (Arquivo: Adiantamentos-2025.json e Adiantamentos-2026.json)
+1. **Clone o repositório:**
+   ```bash
+   git clone https://github.com/felipp2t/estatistica-aplicada.git
+   cd estatistica-aplicada
+   ```
 
-1. `valorPagamento`: Custo direto de cada adiantamento (gastos imprevistos geram picos).
-2. `funcao`: Área de destino (ex: Saúde, Esportes) onde o uso de adiantamentos pode variar.
-3. `fonteRecurso`: Indica a flexibilidade da verba (recursos ordinários vs. vinculados).
-4. `acao`: Descrição do programa ou evento que motivou o gasto específico.
-5. `nomeFazendaCredor`: Nome do beneficiário (identifica concentração de gastos em CPFs/CNPJs).
+2. **Crie e sincronize o ambiente virtual:**
+   ```bash
+   # Cria o ambiente virtual e instala todas as dependências do pyproject.toml
+   uv sync
+   ```
 
-Essas variáveis tem uma correlação menos que -0.3 e maior que +0.3
-Eu também devo ter uma base unificada com todos as variáveis (principal + relacionadas) juntos contendo 20 mil registros ou mais.
+3. **Ative o ambiente virtual:**
+   *No Git Bash (Windows/Linux):*
+   ```bash
+   source .venv/Scripts/activate
+   ```
+   *No PowerShell:*
+   ```powershell
+   .venv\Scripts\Activate.ps1
+   ```
 
-Esse projeto já está meio andando. Então apenas para explicar as coisas: não existe uma variável target_instabilidade, mas sim uma junção de uma base com outra e que foi somada com outra base
+---
 
+## 📂 Organização dos Arquivos e Dados
 
-Você pode criar um código para fazer a correlação dessas variáveis e gerar base unificada?
+Toda a base de dados pesada em formato `.csv` e `.json` é gerenciada na pasta `/bases` e protegida pelo `.gitignore` para manter o repositório leve.
 
+> [!TIP]
+> Para baixar as bases originais direto do portal de transparência da prefeitura municipal com as nomenclaturas exatas, consulte o arquivo detalhado de instruções: **[bases/BASES.md](file:///c:/Users/Felipe/Downloads/grafico_dispersao_XY/bases/BASES.md)**.
 
-"""
+---
 
-Em termos bem simples, essa pergunta está investigando se a troca constante de funcionários "apadrinhados" e os gastos de emergência bagunçam o orçamento da prefeitura.
+## 📓 Linha de Execução do Pipeline (Notebooks)
 
-Vamos quebrar a pergunta em 3 partes fundamentais para entender exatamente o que ela significa:
+O projeto está dividido em uma sequência organizada de **4 Jupyter Notebooks** na pasta `src/`:
 
-1. "A flutuação mensal na proporção de cargos comissionados..."
-Cargos comissionados ("de confiança/livre nomeação") são aqueles em que a prefeitura pode contratar e demitir a qualquer momento, ao contrário de servidores concursados. "Flutuar" significa essa troca frenética de entra e sai. Se uma secretaria contrata muita gente num mês e demite no outro, a proporção flutua.
+### 1. 🧹 [01_etl_base_unificada.ipynb](file:///c:/Users/Felipe/Downloads/grafico_dispersao_XY/src/01_etl_base_unificada.ipynb)
+* **Objetivo:** Processo de ETL (Extração, Transformação e Carga). Carrega os 7 JSONs brutos, faz o mapeamento e a padronização dos nomes das secretarias, expande a série de funcionários por mês/ano e exporta a base de dados integrada de mais de 20 mil registros em `bases/base_unificada.csv`.
 
-2. "... e o volume de adiantamentos emergenciais..."
-Adiantamentos são quantias de dinheiro que a prefeitura libera rápido para cobrir gastos imprevistos e urgentes, meio que "por fora" do rito normal de planejamento.
+### 2. 📈 [02_analise_correlacoes.ipynb](file:///c:/Users/Felipe/Downloads/grafico_dispersao_XY/src/02_analise_correlacoes.ipynb)
+* **Objetivo:** Realiza a fatorização das variáveis categóricas e calcula a Correlação de Pearson em relação à variável de instabilidade de gastos. Gera o relatório `CORRELACOES.md` e renderiza gráficos visuais (gráfico de correlações relevantes e plano cartesiano de dispersão X-Y com linha de tendência).
 
-3. "... explicam a variabilidade dos gastos com pessoal entre as secretarias?"
-Gastos com pessoal num governo devem ser super previsíveis (todo mês a folha de pagamento normalmente é a mesma coisa). Quando há variabilidade (instabilidade), significa que a folha salarial está dando uns "saltos" estranhos ou imprevistos, estourando o caixa. E como cada secretaria (Saúde, Educação, Obras) funciona como uma "empresa" diferente, a pergunta quer comparar o comportamento entre elas.
+### 3. 📐 [03_calculo_amostra.ipynb](file:///c:/Users/Felipe/Downloads/grafico_dispersao_XY/src/03_calculo_amostra.ipynb)
+* **Objetivo:** Aplica as fórmulas de cálculo de tamanho amostral (amostra para populações infinitas e correção de fator de população finita usando o total da base unificada) para definir o tamanho amostral estatisticamente representativo para responder à pergunta problema.
 
-Resumo prático (O "Português Claro")
-O projeto de Estatística está querendo provar a seguinte hipótese:
+### 4. 🔬 [04_regressao_ols.ipynb](file:///c:/Users/Felipe/Downloads/grafico_dispersao_XY/src/04_regressao_ols.ipynb)
+* **Objetivo:** Regressão Linear Múltipla usando Mínimos Quadrados Ordinários (OLS) via `statsmodels`. Aplica o diferencial exigido de conversão matemática das variáveis categóricas qualitativas selecionadas em **bits binários** (Binary Encoding) em vez de Dummies tradicionais.
 
-"As secretarias que ficam trocando muito de cargo comissionado e usando muito dinheirinho de emergência são exatamente as secretarias onde a folha de pagamento mais sai do controle (fica instável) de um mês para o outro?"
+---
 
-Por isso que no código nós extraímos:
+## 📋 Variáveis Analisadas (Arquivos de Origem)
 
-O percentual de comissionados que aquela secretaria teve naquele mês.
-A quantia de dinheiro em adiantamentos que usaram.
-A soma de todas as despesas e se elas variaram.
-"""
+As análises cruzam informações de 4 tipos de dados municipais principais:
+
+### 1. Estrutura do Quadro (`Quadro de Cargos-2025.json` e `2026.json`)
+* **`classificacaoCargo`:** Se o cargo é Efetivo ou Comissionado (Variável chave para a pergunta).
+* **`quantidadeVagasCriadas`:** O limite máximo de expansão de gastos daquela secretaria.
+* **`quantidadeVagasPreenchidas`:** A taxa de ocupação real da estrutura.
+* **`nivelEscolaridade`:** Requisito do cargo, que costuma ditar o patamar salarial inicial.
+* **`situacaoCargo`:** Indica se o cargo está Ativo (gerando custo) ou em extinção.
+* **`competencia`:** Mês de referência do quadro.
+
+### 2. Perfil dos Agentes (`Agentes Públicos-Trabalhando.json`)
+* **`valorRemuneracaoContratual`:** O custo nominal bruto de cada servidor.
+* **`vinculoEmpregaticio`:** Estatutário, CLT, Temporário (vínculos possuem encargos e estabilidades diferentes).
+* **`dataAdmissao`:** Utilizado para calcular o "Tempo de Casa" do servidor (anuênios/triênios).
+* **`cargaHorariaSemanal`:** Permite normalizar o custo entre jornadas de 20h e 40h.
+* **`orgao`:** Chave de ligação para cruzar com as despesas financeiras.
+
+### 3. Execução Financeira (`Despesas com Pessoal-2025.json` e `2026.json`)
+* **`descricaoElemento`:** Identifica se o gasto é com vencimentos, obrigações patronais ou indenizações extraordinárias (exonerações).
+* **`valorEmpenhado`:** Planejado vs. realizado.
+* **`tipoEmpenho`:** Ordinário, Estimativo, Global (indica a previsibilidade do pagamento).
+* **`saldoAPagar`:** Restos a pagar acumulados.
+* **`valorLiquidadoEmpenho`:** Valor real efetivado e conferido (fidelidade do gasto).
+* **`dataEmpenho`:** Variável temporal para a série histórica.
+
+### 4. Adiantamentos (`Adiantamentos-2025.json` e `2026.json`)
+* **`valorPagamento`:** Custo direto de cada adiantamento emergencial (gastos imprevistos).
+* **`funcao` e `fonteRecurso`:** Destino e flexibilidade da verba emergencial.
+* **`acao`:** Motivo que gerou a liberação emergencial de caixa.

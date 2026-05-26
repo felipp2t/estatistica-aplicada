@@ -1,0 +1,20 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Data
+bases/*.json
+bases/*.csv
+
+# Graficos
+graficos/*.png
+
+base_unificada.csv
+
